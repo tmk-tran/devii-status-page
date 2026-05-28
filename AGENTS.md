@@ -66,4 +66,35 @@
   - yarn build
   - yarn lint
 
-  
+## Runtime / Sandbox Environment
+
+Before running any yarn, vite, lint, or build commands:
+
+```bash
+export PATH="$HOME/.nvm/versions/node/v24.16.0/bin:$PATH"
+```
+
+Verify Node version:
+
+```bash
+node -v
+```
+
+Expected:
+
+```bash
+v24.16.0
+```
+
+When starting the Vite dev server:
+
+```bash
+yarn dev --host 0.0.0.0
+```
+
+If sandbox localhost/socket permission is requested, approve it.
+
+If sandbox localhost permission is rejected:
+- do not retry repeatedly
+- continue with build/lint validation only
+- ask the user to run the dev server locally
