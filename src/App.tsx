@@ -9,7 +9,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { useAuth } from "./auth/AuthContext";
+import { useAuth } from "./auth/useAuth";
 
 interface NavigationItem {
   label: string;
@@ -22,15 +22,15 @@ const navigationItems: NavigationItem[] = [
   { label: "Settings", path: "/settings" },
 ];
 
-function App(): React.JSX.Element {
+function App() {
   const { isAuthenticated, logout } = useAuth(); // Reads auth state.
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
       <AppBar position="static" color="default" elevation={0}>
-        <Toolbar>
+        <Toolbar sx={{ bgcolor: "background.paper" }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Devii Status
+            Devii Status Page - Trial
           </Typography>
 
           {isAuthenticated && (

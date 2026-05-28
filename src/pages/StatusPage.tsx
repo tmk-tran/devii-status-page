@@ -1,6 +1,6 @@
 import { Box, Chip, Stack, Typography } from "@mui/material";
 
-function StatusPage(): React.JSX.Element {
+function StatusPage() {
   return (
     <Box>
       <Stack direction="row" spacing={1} sx={{ alignItems: "center", mb: 2 }}>

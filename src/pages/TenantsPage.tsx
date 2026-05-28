@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 
-function TenantsPage(): React.JSX.Element {
+function TenantsPage() {
   return (
     <Box>
       <Typography variant="h4" component="h1" sx={{ mb: 2 }}>

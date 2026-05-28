@@ -43,6 +43,11 @@ export const theme = createTheme({
       defaultProps: {
         variant: "contained",
       },
+      styleOverrides: {
+        root: {
+          borderRadius: 50,
+        },
+      },
     },
   },
 });

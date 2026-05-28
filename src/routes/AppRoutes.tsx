@@ -5,7 +5,7 @@ import SettingsPage from "../pages/SettingsPage";
 import StatusPage from "../pages/StatusPage";
 import TenantsPage from "../pages/TenantsPage";
 
-export function AppRoutes(): React.JSX.Element {
+export function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/status" replace />} /> {/* Root sends users to the app landing page. */}
