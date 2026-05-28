@@ -13,6 +13,7 @@ import "@fontsource/nunito/400.css"; // regular 400
 // import "@fontsource/nunito/600.css"; // optional weight
 // import "@fontsource/nunito/700.css"; // optional weight
 
+import { AuthProvider } from "./auth/AuthContext.tsx";
 import App from "./App.tsx";
 
 createRoot(document.getElementById("root")!).render(
@@ -21,7 +22,9 @@ createRoot(document.getElementById("root")!).render(
       <CssBaseline />
       <ApolloProvider client={apolloClient}>
         <BrowserRouter>
-          <App />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
         </BrowserRouter>
       </ApolloProvider>
     </ThemeProvider>
