@@ -10,10 +10,10 @@ export function AppRoutes() {
     <Routes>
       <Route path="/" element={<Navigate to="/status" replace />} /> {/* Root sends users to the app landing page. */}
 
+      <Route path="/status" element={<StatusPage />} />
       <Route path="/login" element={<LoginPage />} /> {/* Public route for signing in. */}
 
       <Route element={<RequireAuth />}> {/* Protects all nested app routes. */}
-        <Route path="/status" element={<StatusPage />} /> {/* Requires login. */}
         <Route path="/tenants" element={<TenantsPage />} /> {/* Requires login. */}
         <Route path="/settings" element={<SettingsPage />} /> {/* Requires login. */}
       </Route>
