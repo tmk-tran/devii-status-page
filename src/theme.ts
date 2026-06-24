@@ -16,6 +16,7 @@ export const theme = createTheme({
     text: {
       primary: "#F4F5FD",
       secondary: "#A4A4C2",
+      disabled: "#727287",
     },
   },
   shape: {
@@ -42,6 +43,11 @@ export const theme = createTheme({
     MuiButton: {
       defaultProps: {
         variant: "contained",
+      },
+      styleOverrides: {
+        root: {
+          borderRadius: 50,
+        },
       },
     },
   },

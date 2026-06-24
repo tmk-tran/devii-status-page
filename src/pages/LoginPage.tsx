@@ -1,25 +1,39 @@
-import type { ChangeEvent, FormEvent } from "react";
 import { useState } from "react";
-import { Alert, Box, Button, Paper, Stack, TextField, Typography } from "@mui/material";
+import type { ChangeEvent, SyntheticEvent } from "react";
+import { useNavigate } from "react-router";
+import {
+  Alert,
+  Box,
+  Button,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useAuth } from "../auth/useAuth";
 
 interface LoginFormValues {
   email: string;
   password: string;
+  tenantid: string;
 }
 
 interface LoginResponse {
   access_token?: string;
-  token?: string;
   message?: string;
 }
 
 const initialFormValues: LoginFormValues = {
   email: "",
   password: "",
+  tenantid: import.meta.env.VITE_API_TENANTID ?? "", // Loads default tenant from env.
 };
 
-function LoginPage(): React.JSX.Element {
-  const [formValues, setFormValues] = useState<LoginFormValues>(initialFormValues);
+function LoginPage() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const [formValues, setFormValues] =
+    useState<LoginFormValues>(initialFormValues);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [submitMessage, setSubmitMessage] = useState("");
@@ -33,45 +47,57 @@ function LoginPage(): React.JSX.Element {
     }));
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleSubmit = async (
+    event: SyntheticEvent<HTMLFormElement>,
+  ): Promise<void> => {
     event.preventDefault();
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const loginApiUrl = import.meta.env.VITE_API_LOGIN_URL ?? (apiBaseUrl ? `${apiBaseUrl}/login` : "");
 
-    if (!loginApiUrl) {
+    if (!apiBaseUrl) {
       setSubmitError("Login API URL is not configured yet.");
       return;
     }
 
-    setIsSubmitting(true);
+    if (!formValues.tenantid) {
+      setSubmitError("Tenant ID is not configured yet.");
+      return;
+    }
+
     setSubmitError("");
     setSubmitMessage("");
+    setIsSubmitting(true);
 
     try {
-      const response = await fetch(loginApiUrl, {
+      const response = await fetch(`${apiBaseUrl}/auth`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formValues),
+        body: JSON.stringify({
+          login: formValues.email,
+          password: formValues.password,
+          tenantid: formValues.tenantid,
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error("Invalid username or password.");
+      }
 
       const loginResponse = (await response.json()) as LoginResponse;
 
-      if (!response.ok) {
-        throw new Error(loginResponse.message ?? "Unable to log in. Please try again.");
+      if (!loginResponse.access_token) {
+        throw new Error("No access token returned.");
       }
 
-      const accessToken = loginResponse.access_token ?? loginResponse.token;
-
-      if (accessToken) {
-        localStorage.setItem("access_token", accessToken);
-      }
-
-      setSubmitMessage(loginResponse.message ?? "Login submitted successfully.");
+      login(loginResponse.access_token);
+      setSubmitMessage(loginResponse.message ?? "Login successful.");
+      navigate("/status", { replace: true });
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Unable to log in. Please try again.");
+      setSubmitError(
+        error instanceof Error ? error.message : "Unable to log in.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -91,6 +117,7 @@ function LoginPage(): React.JSX.Element {
         elevation={2}
         onSubmit={handleSubmit}
         sx={{
+          borderRadius: 2.5,
           width: "100%",
           maxWidth: 420,
           p: 4,
@@ -107,7 +134,9 @@ function LoginPage(): React.JSX.Element {
           </Box>
 
           {submitError ? <Alert severity="error">{submitError}</Alert> : null}
-          {submitMessage ? <Alert severity="success">{submitMessage}</Alert> : null}
+          {submitMessage ? (
+            <Alert severity="success">{submitMessage}</Alert>
+          ) : null}
 
           <TextField
             autoComplete="email"
@@ -129,8 +158,14 @@ function LoginPage(): React.JSX.Element {
             type="password"
             value={formValues.password}
           />
-          <Button disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
-            {isSubmitting ? "Submitting..." : "Submit"}
+          <Button
+            disabled={isSubmitting}
+            fullWidth
+            size="large"
+            type="submit"
+            variant="contained"
+          >
+            {isSubmitting ? "Signing in..." : "SIGN IN"}
           </Button>
         </Stack>
       </Paper>

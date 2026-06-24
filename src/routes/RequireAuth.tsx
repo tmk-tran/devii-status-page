@@ -1,12 +1,13 @@
 import { Navigate, Outlet, useLocation } from "react-router";
+import { useAuth } from "../auth/useAuth";
 
-export function RequireAuth(): React.JSX.Element {
-  const location = useLocation(); // Remembers where the user tried to go.
-  const token = localStorage.getItem("access_token"); // Replace later with auth context/state if needed.
+export function RequireAuth() {
+  const { isAuthenticated } = useAuth(); // Reads centralized auth state.
+  const location = useLocation(); // Stores attempted route.
 
-  if (!token) {
-    return <Navigate to="/login" replace state={{ from: location }} />; // Redirect unauthenticated users.
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace state={{ from: location }} />; // Sends user to login.
   }
 
-  return <Outlet />; // Renders the protected child route.
+  return <Outlet />; // Shows protected route.
 }
