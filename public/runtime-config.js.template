@@ -1,0 +1,6 @@
+// Replaced when the container starts
+
+window.RUNTIME_CONFIG = {
+  API_BASE_URL: "${VITE_API_BASE_URL}",
+  API_TENANTID: "${VITE_API_TENANTID}",
+};

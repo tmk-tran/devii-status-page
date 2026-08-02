@@ -7,12 +7,13 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { runtimeConfig } from "../config/runtimeConfig";
 import { StatusMetaDataRow, StatusMetricCard } from "../components";
 import ApiOutlinedIcon from "@mui/icons-material/ApiOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 
 function StatusPage() {
-  const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const apiUrl = runtimeConfig.apiBaseUrl; // Runtime-configured API URL
 
   return (
     <Box>

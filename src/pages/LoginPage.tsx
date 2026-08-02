@@ -11,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useAuth } from "../auth/useAuth";
+import { runtimeConfig } from "../config/runtimeConfig";
 
 interface LoginFormValues {
   email: string;
@@ -26,12 +27,14 @@ interface LoginResponse {
 const initialFormValues: LoginFormValues = {
   email: "",
   password: "",
-  tenantid: import.meta.env.VITE_API_TENANTID ?? "", // Loads default tenant from env.
+  tenantid: runtimeConfig.apiTenantID ?? "", // Loads default tenant from .env
 };
 
 function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { apiBaseUrl } = runtimeConfig; // Read Docker runtime configuration
+
   const [formValues, setFormValues] =
     useState<LoginFormValues>(initialFormValues);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,14 +55,12 @@ function LoginPage() {
   ): Promise<void> => {
     event.preventDefault();
 
-    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
     if (!apiBaseUrl) {
       setSubmitError("Login API URL is not configured yet.");
       return;
     }
 
-    if (!formValues.tenantid) {
+    if (!formValues.tenantid.trim()) {
       setSubmitError("Tenant ID is not configured yet.");
       return;
     }
